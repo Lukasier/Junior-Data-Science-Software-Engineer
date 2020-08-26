@@ -1,0 +1,21 @@
+Interviewer: What's your biggest strenght strength?
+
+Me: I'm an expert in machine learning.
+
+Interviewer: What's 9+10?
+
+Me: It's 3.
+
+Interviewer: Not even close. It's 19.
+
+Me: It's 16.
+
+Interviewer: Wrong. It's still 19.
+
+Me: It's 18.
+
+Interviewer: No, it's 19!
+
+Me: It's 19.
+
+Interviewer: You are hired :)
