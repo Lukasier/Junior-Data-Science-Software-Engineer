@@ -3,36 +3,27 @@ import pandas as pd
 import sklearn
 import pickle as pkl
 
-    # Split the data for training.
-df = pd.read_csv("data/train_bf.csv")
+# Prepare data for training
+df = pd.read_csv("../data/train_bf.csv")
 
 y = df["Survived"]
+x = df.drop("Survived", axis=1)
 
-tr_col = []
-for c in df.columns:
-    if c == "Survived":
-        pass
-    else:
-        tr_col.append(c)
-
-# Create a classifier and select scoring methods.
+# Create a classifier
 from sklearn.ensemble import RandomForestClassifier
 clf = RandomForestClassifier(n_estimators=10)
 
+# Fit full model and predict on train
+clf.fit(x, y)
+preds = clf.predict(x)
 
-# Fit full model and predict on both train and test.
-clf.fit(df[tr_col], y)
-preds = clf.predict(df[tr_col])
-metric_name = "train_accuracy"
+# Select scoring metod
 metric_result = sklearn.metrics.accuracy_score(y, preds)
 
-model_pickle = open("data/model.pkl", 'wb')
-pkl.dump(clf, model_pickle)
+# Pack model for test
+pkl.dump(clf, open("../data/model.pkl", 'wb'))
 model_pickle.close()
 
-# Return metrics and model.
-info = ""
-info = info + metric_name
-info = info + " for the model is "
-info = info + str(metric_result)
+# Print accuracy of the model
+info = "The train accuracy is " + str(metric_result)
 print(info)

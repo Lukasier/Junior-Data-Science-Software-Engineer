@@ -1,25 +1,23 @@
 import pandas as pd
 import pickle as pkl
 
-df = pd.read_csv("data/val_bf.csv")
+df = pd.read_csv("../data/val_bf.csv")
 
-df.dropna(inplace = True)
-
+# Set target for model and remove it from test set
 target = df["Survived"]
 del(df["Survived"])
-    
+
+# Unpack pre-created model
 model_unpickle = open("data/model.pkl", 'rb')
 model = pkl.load(model_unpickle)
-model.close()
 
-predictions = model.predict(df)
 # Reassign target (if it was present) and predictions.
-df["prediction"] = predictions
+df["prediction"] = model.predict(df)
 df["target"] = target
 
-ok = 0
-for i in df.iterrows():
-    if (i[1]["target"] == i[1]["prediction"]):
-        ok = ok + 1
+# Calculate accuracy of the model
+correct = np.count_nonzero(np.where(df["prediction"]==df["target"],1,0))
+total = df.shape[0]
+accuracy = correct/total
 
-print("accuracy is", ok / df.shape[0])
+print("accuracy is", accuracy)

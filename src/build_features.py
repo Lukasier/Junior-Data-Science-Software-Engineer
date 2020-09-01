@@ -1,32 +1,28 @@
 import pandas as pd
-
 import sklearn
 
-def execute(input_file, output_file, force_write = True):
-    """Builds features
-
-    Args:
-        input_file (str): input file.
+def create_valid_features(input_file, output_file, force_write = True):
     """
+    Changes cateogrical data from dataset into numberic values
+    
+    Parameters:
+    
+    input_file : str, path object or file-like object
+    output_file : str or file handle
+    
+    """
+    # Create data frame
     df = pd.read_csv(input_file)
 
-    df["Sex"] = df["Sex"].replace("male", 0)
-    df["Sex"] = df["Sex"].replace("female", 1)
-
-    embarked_dict = {}
-    embarked_dict_values = 0
-    for i in df.Embarked:
-        if i in embarked_dict.keys():
-            pass
-        else:
-            embarked_dict_values = embarked_dict_values + 1
-            embarked_dict[i] = embarked_dict_values
+    # Create numeric representation of categorical features (sex,embarked)
+    # I took "sklearn" as a suggestion to use LabelEncoder :)
+    lb_make = LabelEncoder()
+    df["Sex"] = lb_make.fit_transform(df["Sex"])
+    df["Embarked"] = lb_make.fit_transform(df["Embarked"])
     
-    for i in embarked_dict.keys():
-        df["Embarked"].replace(i, embarked_dict[i], inplace = True)
+    # Create feature desribing wheter person was alone or not based on family size
+    df["FamilySize"] = df["SibSp"] + df["Parch"]
+    df.loc[df["FamilySize"] > 0, "IsAlone"] = 0
+    df.loc[df["FamilySize"] == 0, "IsAlone"] = 1
 
-    df["FamilySize"] = df["SibSp"] + df["Parch"] + 1
-    df["IsAlone"] = 0
-    df.loc[df["FamilySize"] == 1, "IsAlone"] = 1
-
-    df.to_csv(output_file)
+    df.to_csv(output_file, index=False)
